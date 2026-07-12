@@ -20,11 +20,11 @@ df['Signal_MA'] = df['Close'].rolling(window=20).mean()
 # Position: 1 (Long) if Close > MA, else 0 (Flat/Cash)
 df['Position'] = np.where(df['Close'] > df['Signal_MA'], 1, 0)
 
-# CRITICAL: Shift positions by 1 day to execute on NEXT open, removing lookahead bias
+# CRITICAL: Shift positions by 1 day to enter at next day's close: signal from today's close, hold position overnight into the following close
 df['Position'] = df['Position'].shift(1)
 
 # 3. Strategy Returns Calculation
-df['Market_Returns'] = df[('Close') - df('Open') / df('Open')].pct_change()
+df['Market_Returns'] = df['Close'].pct_change()
 df['Strategy_Returns'] = df['Market_Returns'] * df['Position']
 
 # Calculate compounded cumulative returns
